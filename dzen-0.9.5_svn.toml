@@ -1,0 +1,17 @@
+## made by Raqui333 1-14-2019 22:25:00
+## YALOS build helper
+
+dependences = [
+    "libx11"
+]
+
+[info]
+name = "dzen"
+version = "0.9.5_svn"
+description = "Dzen is a general purpose messaging, notification and menuing program for X11."
+manpage = "https://github.com/robm/dzen"
+license = "MIT"
+
+[build]
+source = "https://github.com/robm/dzen/archive/master.tar.gz"
+makefile = "Makefile"
