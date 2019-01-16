@@ -1,7 +1,10 @@
 #include "../include/cpptoml.h"
+#include <experimental/filesystem>
+#include <regex>
 #include <iostream>
 
 using namespace std;
+namespace fs = std::experimental::filesystem;
 
 /************
  *
@@ -14,11 +17,44 @@ using namespace std;
  *
  ************/
 
+// function that search for REGEX filename in directory
+vector<string> getfile(string rex) {
+    fs::path ybh_path = fs::current_path(); // directory to read
+
+    // regex; variable rex plus regex /.*/
+    // smatch; used in 'regex_match' to list /matches/
+    regex reg(rex+".*");
+    smatch matches;
+
+    // create a string vector and list the files name in directory
+    vector<string> ybhs;
+    for (const auto& dirname : fs::directory_iterator(ybh_path)) {
+        if (fs::is_regular_file(dirname)) ybhs.push_back(fs::path(dirname).filename());
+    }
+
+    // create string vector with the matches
+    vector<string> returning;
+    for (const auto& ybh : ybhs) {
+        if (regex_match(ybh, matches, reg)) returning.push_back(matches[0]);
+    }
+
+    return returning;
+}
+
 // function that read a file.toml and return info
-// actually set to 'dzen-0.9.5_svn.toml'; temporarily
-void info(){
+void info(string name) {
+    // if more than 1 pkgs is found; return a list with it
+    vector<string> pkgs = getfile(name);
+    if (pkgs.size() > 1) {
+        for (const auto& pkg : pkgs) cout << pkg << endl;
+        return;
+    } else if (pkgs.size() == 0) {
+        cout << "yap: no package found" << endl;
+        return;
+    }
+
     // initialize file.toml
-    auto config = cpptoml::parse_file("dzen-0.9.5_svn.toml"); // temporarily
+    auto config = cpptoml::parse_file(pkgs[0]);
 
     // get info from [info] table in file.toml
     auto info = config->get_table("info");
@@ -37,13 +73,14 @@ void info(){
                     "version      :\t" + (*p_ver)  + "\n"
                     "description  :\t" + (*p_desc) + "\n"
                     "manpage      :\t" + (*p_man)  + "\n"
-                    "license      :\t" + (*p_lis)  + "\n\n";
+                    "license      :\t" + (*p_lis)  + "\n";
 
     cout << infout << endl;
     
     // output dependence info from file.toml
     cout << "Dependences:\n" << endl;
     for (const auto& dep : *deps) cout << "\t" << dep << endl;
+    cout << endl;
 }
 
 // main function '-
@@ -62,7 +99,11 @@ int main(int argc, char* argv[]) {
     if (option == "-h" || option == "--help" || option.empty()) {
         cout << help << endl;
     } else if (option == "-q" || option == "--info") {
-        info();
+        if (argv[2] == NULL) {
+            cout << "yap: no package option" << endl;
+            return 2;
+        }
+        info(argv[2]);
     } else {
         cout << "yap: no such option: '" << argv[1] << "'" << endl;
     }
