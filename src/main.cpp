@@ -1,6 +1,6 @@
-#include "../include/functions.h"
+#include "../include/utils.h"
 
-/************
+/*
  *
  * package manager must do:
  *      
@@ -9,7 +9,7 @@
  *      make it
  *      install it
  *
- ************/
+ */
 
 int main(int argc, char* argv[]) {
     // test if the first arg is NULL or not
@@ -17,10 +17,10 @@ int main(int argc, char* argv[]) {
 
     // help menssage
     std::string help = "Usage: yap [option] [arg]\n\n"
-                  "-h/--help        print this menssage and leave\n"
-                  "-s/--search      search for a program\n"
-                  "-i/--install     install a program\n"
-                  "-q/--info        get information about a program\n";
+                       "-h/--help        print this menssage and leave\n"
+                       "-s/--search      search for a program\n"
+                       "-i/--install     install a program\n"
+                       "-q/--info        get information about a program\n";
 
     // get options and do events based on it
     if (option == "-h" || option == "--help" || option.empty()) {
