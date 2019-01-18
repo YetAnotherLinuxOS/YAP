@@ -11,7 +11,6 @@ namespace fs = std::experimental::filesystem;
 namespace yap {
     // vector<string> getfile(string _regex_);
     std::vector<std::string> getfile(std::string);
-    void display_info(std::string);
     
     namespace toml_string {
         // string table(string _filename_, string _keyname_, string _tablename_);

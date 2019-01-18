@@ -1,5 +1,6 @@
 #include "../include/yap.h"
 #include <iostream>
+#include "../include/package.h"
 
 /*
  *
@@ -31,7 +32,10 @@ int main(int argc, char* argv[]) {
             std::cout << "yap: no package option" << std::endl;
             return 2;
         }
-        yap::display_info(argv[2]);
+        // yap::display_info(argv[2]);
+        yap::Package pkg(argv[2]);
+        std::string info = pkg.get_info();
+        std::cout << info << "\n";
     } else {
         std::cout << "yap: no such option: '" << argv[1] << "'" << std::endl;
     }
