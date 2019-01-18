@@ -11,7 +11,7 @@ all: $(BIN)
 yap: $(OBJ)
 	$(CC) $^ -o $@ $(CXXFLAGS)
 
-functions.o: src/functions.cpp
+yap.o: src/yap.cpp
 	$(CC) -c $< -o $@ $(CXXFLAGS)
 
 main.o: src/main.cpp
