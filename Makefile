@@ -1,6 +1,6 @@
 ## YAP Makefile
 
-CC = g++
+CXX = clang++
 CXXFLAGS = -lstdc++fs -std=c++17
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
@@ -9,13 +9,13 @@ BIN = yap
 all: $(BIN)
 
 yap: $(OBJ)
-	$(CC) $^ -o $@ $(CXXFLAGS)
+	$(CXX) $^ -o $@ $(CXXFLAGS)
 
 yap.o: src/yap.cpp
-	$(CC) -c $< -o $@ $(CXXFLAGS)
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 main.o: src/main.cpp
-	$(CC) -c $< -o $@ $(CXXFLAGS)
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 .PHONY: clean
 
