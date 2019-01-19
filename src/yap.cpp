@@ -2,7 +2,7 @@
 
 // function that search for REGEX filename in directory
 std::vector<std::string> yap::getfile(std::string rex) {
-    fs::path ybh_path = "test"; // directory to read
+    fs::path ybh_path = "test/"; // directory to read; '/' on the end IS necessary
 
     // regex; variable rex plus regex /.*/
     // smatch; used in 'regex_match' to list /matches/
@@ -19,6 +19,12 @@ std::vector<std::string> yap::getfile(std::string rex) {
     std::vector<std::string> returning;
     for (const auto& ybh : ybhs) {
         if (std::regex_match(ybh, matches, reg)) returning.push_back(matches[0]);
+    }
+    
+    // if returning have only one element
+    // insert ybh_path to the begin of the string
+    if (returning.size() == 1) {
+        returning.at(0).insert(0, std::string(ybh_path));
     }
 
     return returning;
