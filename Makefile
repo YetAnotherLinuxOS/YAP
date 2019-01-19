@@ -11,12 +11,6 @@ all: $(BIN)
 yap: $(OBJ)
 	$(CXX) $^ -o $@ $(CXXFLAGS)
 
-yap.o: src/yap.cpp
-	$(CXX) -c $< -o $@ $(CXXFLAGS)
-
-main.o: src/main.cpp
-	$(CXX) -c $< -o $@ $(CXXFLAGS)
-
 .PHONY: clean
 
 clean:
