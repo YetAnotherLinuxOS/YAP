@@ -2,11 +2,15 @@
 
 std::string yap::Package::get_info(){
     std::stringstream info;
-    info << "\nName: " << name;
-    info << "\nVersion: " << version;
-    info << "\nDescription: " << description;
-    info << "\nSource: " << source_link; 
-    info << "\nDependencies:\n";
+    info << "Package: " << name << "-" << version << std::endl;
+    
+    info << "\nName          :\t" << name;
+    info << "\nVersion       :\t" << version;
+    info << "\nDescription   :\t" << description;
+    info << "\nManpage       :\t" << manpage;
+    info << "\nLicense       :\t" << license;
+    
+    info << "\n\nDependencies\n";
     for (auto dep : dependecies)
         info << "\t" << dep << "\n";
 
@@ -32,8 +36,8 @@ yap::Package::Package(std::string path){
     license     = toml_string::table(pkgs[0], "license"    , "info");
     source_link = toml_string::table(pkgs[0], "source"     , "build");
 
-    // get array from 'dependences' key in file.toml
-    dependecies = toml_string::array(pkgs[0], "dependences");
+    // get array from 'dependencies' key in file.toml
+    dependecies = toml_string::array(pkgs[0], "dependencies");
 }
 
 void yap::Package::Download(){
