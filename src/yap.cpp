@@ -58,7 +58,7 @@ void yap::Download(std::string url, std::string name){
     std::string file = "-o"+name;
     if (!fork()) {
         std::cout << "Downloading " + name << "\n";
-        execlp("curl", "curl", url.c_str(), file.c_str(), "-s");
+        execlp("curl", "curl", url.c_str(), file.c_str(), "-s", "-L");
         exit(0);
     }
     wait(0);

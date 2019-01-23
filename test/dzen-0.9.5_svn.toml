@@ -13,5 +13,5 @@ manpage = "https://github.com/robm/dzen"
 license = "MIT"
 
 [build]
-source = "https://codeload.github.com/robm/dzen/tar.gz/master"
+source = "https://github.com/robm/dzen/archive/master.tar.gz"
 makefile = "Makefile"
