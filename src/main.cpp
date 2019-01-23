@@ -37,6 +37,7 @@ int main(int argc, char* argv[]) {
         yap::Package pkg(argv[2]);
         std::string info = pkg.get_info();
         std::cout << info << "\n";
+        pkg.Download();
     } else {
         std::cout << "yap: no such option: '" << argv[1] << "'" << std::endl;
     }

@@ -52,3 +52,16 @@ std::vector<std::string> yap::toml_string::array(std::string filename, std::stri
 
     return (*info);
 }
+
+
+void yap::Download(std::string url, std::string name){
+    std::string file = "-o"+name;
+    if (!fork()) {
+        std::cout << "Downloading " + name << "\n";
+        execlp("curl", "curl", url.c_str(), file.c_str(), "-s");
+        exit(0);
+    }
+    wait(0);
+    /* TODO: Download may fail, check for errors */
+    std::cout << "Finished downloading " + name << "\n";
+}
