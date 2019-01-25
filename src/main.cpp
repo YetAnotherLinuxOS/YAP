@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
     help << "-s/--search      search for a program\n";
     help << "-i/--install     install a program\n";
     help << "-q/--info        get information about a program\n";
+    help << "-d/--download    only downloads the files\n";
 
     // get options and do events based on it
     if (option == "-h" || option == "--help" || option.empty()) {
@@ -37,7 +38,16 @@ int main(int argc, char* argv[]) {
         yap::Package pkg(argv[2]);
         std::string info = pkg.get_info();
         std::cout << info << "\n";
+    } else if (option == "-d" | option == "--download") {
+        if (argv[2] == NULL) {
+            std::cout << "yap: no package option" << std::endl;
+            return 2;
+        }
+
+        yap::Package pkg(argv[2]);
+        std::cout << "Downloading\n";
         pkg.Download();
+        std::cout << "Finished downloading\n";
     } else {
         std::cout << "yap: no such option: '" << argv[1] << "'" << std::endl;
     }

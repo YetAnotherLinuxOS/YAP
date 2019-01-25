@@ -56,12 +56,19 @@ std::vector<std::string> yap::toml_string::array(std::string filename, std::stri
 
 void yap::Download(std::string url, std::string name){
     std::string file = "-o"+name;
+    const char* args[] = {
+        "curl",
+        url.c_str(),
+        file.c_str(),
+        "-s",
+        "-L",
+        NULL
+    };
     if (!fork()) {
-        std::cout << "Downloading " + name << "\n";
-        execlp("curl", "curl", url.c_str(), file.c_str(), "-s", "-L");
-        exit(0);
+        if(execvp(args[0], (char*const*)args) == -1){
+            std::cerr << "Download failed!\nerrno: " << errno << "\n";
+            exit(-1);
+        }
     }
     wait(0);
-    /* TODO: Download may fail, check for errors */
-    std::cout << "Finished downloading " + name << "\n";
 }

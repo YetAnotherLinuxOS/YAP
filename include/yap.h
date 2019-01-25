@@ -7,6 +7,7 @@
 #include <experimental/filesystem>
 #include <cstdlib>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/wait.h>
 
 namespace fs = std::experimental::filesystem;
