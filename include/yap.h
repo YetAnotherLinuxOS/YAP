@@ -22,6 +22,12 @@ namespace yap {
     // int launcher(const char _*command[]_);
     int launcher(const char **);
     
+    // void Extract(string _filename.tar.gz_);
+    void Extract(std::string);
+    
+    // void Compile(string _sourceLink_, string _name_);
+    void Compile(std::string, std::string);
+    
     namespace toml_string {
         // string table(string _filename_, string _keyname_, string _tablename_);
         std::string table(std::string, std::string, std::string);

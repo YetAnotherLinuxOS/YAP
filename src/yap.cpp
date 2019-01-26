@@ -80,3 +80,34 @@ void yap::Download(std::string url, std::string name){
         exit(-1);    
     }
 }
+
+// extract
+void yap::Extract(std::string name) {
+    std::regex REG(".tar.gz");
+    std::string file = std::regex_replace(name, REG, "");
+    
+    fs::create_directory(file);
+    
+    const char *args[] = {
+        "tar",
+        "-x",
+        "-f",
+        name.c_str(),
+        "-C",
+        file.c_str(),
+        "--strip-components",
+        "1",
+        NULL
+    };
+    
+    if (yap::launcher(args) == -1) {
+        std::cerr << "Extract falied!\nerrno: " << errno << std::endl;
+        exit(-1);
+    }
+}
+
+// compile
+void yap::Compile(std::string sourceLink, std::string name) {
+    yap::Download(sourceLink, name);
+    yap::Extract(name);
+}

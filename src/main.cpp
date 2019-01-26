@@ -48,6 +48,16 @@ int main(int argc, char* argv[]) {
         std::cout << "Downloading\n";
         pkg.Download();
         std::cout << "Finished downloading\n";
+    } else if (option == "-i" | option == "--install") {
+        if (argv[2] == NULL) {
+            std::cout << "yap: no package option" << std::endl;
+            return 2;
+        }
+        
+        yap::Package pkg(argv[2]);
+        std::cout << "Compiling\n";
+        pkg.Compile();
+        std::cout << "Finished Compilation\n";
     } else {
         std::cout << "yap: no such option: '" << argv[1] << "'" << std::endl;
     }

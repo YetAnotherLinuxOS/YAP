@@ -43,3 +43,7 @@ yap::Package::Package(std::string path){
 void yap::Package::Download(){
     yap::Download(source_link, name+version+".tar.gz");
 }
+
+void yap::Package::Compile() {
+    yap::Compile(source_link, name+version+".tar.gz");
+}

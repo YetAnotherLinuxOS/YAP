@@ -25,6 +25,7 @@ namespace yap {
         std::string get_info();
         Package(std::string);
         void Download();
+        void Compile();
     };
 }
 
