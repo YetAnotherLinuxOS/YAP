@@ -82,12 +82,8 @@ void yap::Download(std::string url, std::string name){
 }
 
 // extract
-void yap::Extract(std::string name) {
-    std::regex REG(".tar.gz");
-    std::string file = std::regex_replace(name, REG, "");
-    
+void yap::Extract(std::string name, std::string file) {
     fs::create_directory(file);
-    
     const char *args[] = {
         "tar",
         "-x",
@@ -106,8 +102,113 @@ void yap::Extract(std::string name) {
     }
 }
 
-// compile
+// make
+void yap::Make(std::string path) {
+    const char *args[] = {
+        "make",
+        "-C",
+        path.c_str(),
+        NULL
+    };
+    
+    if (yap::launcher(args) == -1) {
+        std::cerr << "Compilation falied!\nerrno: " << errno << std::endl;
+        exit(-1);
+    }
+}
+
+// install
+void yap::Install(std::string path) {
+    const char *args[] = {
+        "make",
+        "install",
+        "clean",
+        "-C",
+        path.c_str(),
+        NULL
+    };
+    
+    if (yap::launcher(args) == -1) {
+        std::cerr << "Install falied!\nerrno: " << errno << std::endl;
+        exit(-1);
+    }
+}
+
+// uninstall
+void yap::Uninstall(std::string name) {
+    // variables
+    std::string path = "USR/yap/src";
+    chdir(path.c_str());
+    
+    const char *args[] = {
+        "make",
+        "uninstall",
+        "clean",
+        "-C",
+        name.c_str(),
+        NULL
+    };
+    
+    if (yap::launcher(args) == -1) {
+        std::cerr << "Uninstall falied!\nerrno: " << errno << std::endl;
+        exit(-1);
+    }
+}
+
+// compile process
 void yap::Compile(std::string sourceLink, std::string name) {
+    // variables
+    std::string path = "USR/yap/src";
+    chdir(path.c_str());
+    
+    std::regex REG(".tar.gz");
+    std::string file = std::regex_replace(name, REG, ""); // file name without .tar.gz
+    
+    std::string PREFIX = "../../..";
+    std::string PREFIX_FILE = file+"/config.mk";
+    
+    // download source
+    std::cout << "Downloading..." << std::endl;
     yap::Download(sourceLink, name);
-    yap::Extract(name);
+    std::cout << "Finished Downloading" << std::endl;
+ 
+    // extract source   
+    std::cout << "Extracting..." << std::endl;
+    yap::Extract(name, file);
+    fs::remove(name);
+    std::cout << "Finished Extracting" << std::endl;
+    
+    // pre compile process
+    if(fs::exists(PREFIX_FILE)) {
+        // get PREFIX
+        std::ifstream fin;
+        fin.open(PREFIX_FILE);
+        
+        std::string data;
+        std::stringstream prefix_file;
+        while (getline(fin, data))
+            prefix_file << data << std::endl;
+        
+        fin.close();
+        
+        // replace PREFIX
+        std::ofstream fout;
+        fout.open(PREFIX_FILE);
+        
+        std::regex REGF("\nPREFIX.*");
+        std::string new_prefix_file = std::regex_replace(prefix_file.str(), REGF, "\nPREFIX = "+PREFIX);
+        
+        fout << new_prefix_file;
+        fout.close();
+    }
+    
+    // compile source
+    std::cout << "Compiling..." << std::endl;
+    Make(file);
+    std::cout << "Finished Compiling" << std::endl;
+    
+    // install source
+    std::cout << "Installing..." << std::endl;
+    Install(file);
+    std::cout << "Finished Installing" << std::endl;
 }

@@ -16,14 +16,23 @@ namespace yap {
     // vector<string> getfile(string _regex_);
     std::vector<std::string> getfile(std::string);
     
-    // void Download(string _sourceLink_, string _name_);
-    void Download(std::string, std::string);
-    
     // int launcher(const char _*command[]_);
     int launcher(const char **);
     
+    // void Download(string _sourceLink_, string _name_);
+    void Download(std::string, std::string);
+    
     // void Extract(string _filename.tar.gz_);
-    void Extract(std::string);
+    void Extract(std::string, std::string);
+    
+    // void Make(string _path_);
+    void Make(std::string);
+    
+    // void Install(string _path_);
+    void Install(std::string);
+    
+    // void Uninstall(string _path_);
+    void Uninstall(std::string);
     
     // void Compile(string _sourceLink_, string _name_);
     void Compile(std::string, std::string);

@@ -4,7 +4,7 @@
 
 /*
  *
- * package manager must do:
+ * TODO:
  *      
  *      download tarball in due directory
  *      unpack tarball in due directory
@@ -21,10 +21,10 @@ int main(int argc, char* argv[]) {
     std::stringstream help;
     help << "Usage: yap [option] [arg]\n\n";
     help << "-h/--help        print this menssage and leave\n";
-    help << "-s/--search      search for a program\n";
     help << "-i/--install     install a program\n";
     help << "-q/--info        get information about a program\n";
     help << "-d/--download    only downloads the files\n";
+    help << "-u/--uninstall   uninstall a program\n";
 
     // get options and do events based on it
     if (option == "-h" || option == "--help" || option.empty()) {
@@ -45,9 +45,9 @@ int main(int argc, char* argv[]) {
         }
 
         yap::Package pkg(argv[2]);
-        std::cout << "Downloading\n";
+        std::cout << "Downloading...\n";
         pkg.Download();
-        std::cout << "Finished downloading\n";
+        std::cout << "Finished Downloading\n";
     } else if (option == "-i" | option == "--install") {
         if (argv[2] == NULL) {
             std::cout << "yap: no package option" << std::endl;
@@ -55,9 +55,17 @@ int main(int argc, char* argv[]) {
         }
         
         yap::Package pkg(argv[2]);
-        std::cout << "Compiling\n";
         pkg.Compile();
-        std::cout << "Finished Compilation\n";
+    } else if (option == "-u" | option == "--uninstall") {
+        if (argv[2] == NULL) {
+            std::cout << "yap: no package option" << std::endl;
+            return 2;
+        }
+        
+        std::cout << "Uninstalling..." << std::endl;
+        yap::Package pkg(argv[2]);
+        pkg.Uninstall();
+        std::cout << "Finished Uninstalling" << std::endl;
     } else {
         std::cout << "yap: no such option: '" << argv[1] << "'" << std::endl;
     }
