@@ -53,7 +53,17 @@ std::vector<std::string> yap::toml_string::array(std::string filename, std::stri
     return (*info);
 }
 
+// exec system commands
+int yap::launcher(const char *command[]) {
+    if (!fork()) {
+        if(execvp(command[0], (char*const*)command) == -1)
+            return -1;
+    }
+    wait(0);
+    return 0;
+}
 
+// download
 void yap::Download(std::string url, std::string name){
     std::string file = "-o"+name;
     const char* args[] = {
@@ -64,11 +74,9 @@ void yap::Download(std::string url, std::string name){
         "-L",
         NULL
     };
-    if (!fork()) {
-        if(execvp(args[0], (char*const*)args) == -1){
-            std::cerr << "Download failed!\nerrno: " << errno << "\n";
-            exit(-1);
-        }
+
+    if (yap::launcher(args) == -1) {
+        std::cerr << "Download failed!\nerrno: " << errno << "\n";
+        exit(-1);    
     }
-    wait(0);
 }
