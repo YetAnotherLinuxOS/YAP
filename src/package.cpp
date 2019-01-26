@@ -22,10 +22,10 @@ yap::Package::Package(std::string path){
     std::vector<std::string> pkgs = yap::getfile(path);
     if (pkgs.size() > 1) {
         for (const auto& pkg : pkgs) std::cout << pkg << std::endl;
-        return;
+        exit(0); // maybe exit (-1)?
     } else if (pkgs.size() == 0) {
         std::cout << "yap: no package found" << std::endl;
-        return;
+        exit(0); // maybe exit (-1)?
     }
 
     // get strings from 'info' table in file.toml 
@@ -41,9 +41,5 @@ yap::Package::Package(std::string path){
 }
 
 void yap::Package::Download(){
-
-}
-
-void yap::Package::Download(std::string){
-
+    yap::Download(source_link, name+version+".tar.gz");
 }
