@@ -15,3 +15,16 @@ license = "MIT"
 [build]
 source = "https://github.com/robm/dzen/archive/master.tar.gz"
 makefile = "Makefile"
+
+make = [
+    "make",
+    "make -C gadgets"
+    ]
+
+install = [
+    "make install clean"
+    ]
+    
+uninstall = [
+    "make uninstall clean"
+    ]
