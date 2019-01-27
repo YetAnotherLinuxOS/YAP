@@ -38,6 +38,11 @@ yap::Package::Package(std::string path){
 
     // get array from 'dependencies' key in file.toml
     dependecies = toml_string::array(pkgs[0], "dependencies");
+    
+    // get array from table 'build'
+    compile_make      = toml_string::tarray(pkgs[0], "make"     , "build");
+    compile_install   = toml_string::tarray(pkgs[0], "install"  , "build");
+    compile_uninstall = toml_string::tarray(pkgs[0], "uninstall", "build");
 }
 
 void yap::Package::Download(){
@@ -45,9 +50,5 @@ void yap::Package::Download(){
 }
 
 void yap::Package::Compile() {
-    yap::Compile(source_link, name+version+".tar.gz");
-}
-
-void yap::Package::Uninstall() {
-    yap::Uninstall(name+version);
+    yap::Compile(source_link, name+version+".tar.gz", compile_install, compile_make);
 }

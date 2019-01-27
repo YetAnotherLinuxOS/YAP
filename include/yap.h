@@ -25,17 +25,8 @@ namespace yap {
     // void Extract(string _filename.tar.gz_);
     void Extract(std::string, std::string);
     
-    // void Make(string _path_);
-    void Make(std::string);
-    
-    // void Install(string _path_);
-    void Install(std::string);
-    
-    // void Uninstall(string _path_);
-    void Uninstall(std::string);
-    
     // void Compile(string _sourceLink_, string _name_);
-    void Compile(std::string, std::string);
+    void Compile(std::string, std::string, std::vector<std::string>, std::vector<std::string>);
     
     namespace toml_string {
         // string table(string _filename_, string _keyname_, string _tablename_);
@@ -43,6 +34,9 @@ namespace yap {
         
         // vector<string> array(string _filename_, string _keyname_);
         std::vector<std::string> array(std::string, std::string);
+        
+        //  vector<string> tarray(string _filename_, string _keyname_, string _tablename_);
+        std::vector<std::string> tarray(std::string, std::string, std::string);
     }
 }
 

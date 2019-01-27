@@ -21,12 +21,14 @@ namespace yap {
         std::string description;
         std::string source_link;
         std::vector<std::string> dependecies;
+        std::vector<std::string> compile_make;
+        std::vector<std::string> compile_install;
+        std::vector<std::string> compile_uninstall;
     public:
         std::string get_info();
         Package(std::string);
         void Download();
         void Compile();
-        void Uninstall();
     };
 }
 

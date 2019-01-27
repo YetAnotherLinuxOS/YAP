@@ -53,14 +53,53 @@ std::vector<std::string> yap::toml_string::array(std::string filename, std::stri
     return (*info);
 }
 
+// get array from table
+std::vector<std::string> yap::toml_string::tarray(std::string filename, std::string keyname, std::string tablename) {
+    // initialize file 'filename'
+    auto config = cpptoml::parse_file(filename);
+    
+    // get array
+    auto table = config->get_table(tablename);
+    auto info = table->get_array_of<std::string>(keyname);
+    
+    return (*info);
+}
+
 // exec system commands
-int yap::launcher(const char *command[]) {
+int yap::launcher(const char **command) {
     if (!fork()) {
         if(execvp(command[0], (char*const*)command) == -1)
             return -1;
     }
     wait(0);
     return 0;
+}
+
+// split string; pqp; PQP;
+const char **split_it(std::string str) {
+    int bufsize = 16, pos = 0;
+    char **result = (char **) calloc(bufsize, sizeof(char *));
+
+    size_t delim = str.find(" ");
+    while (delim != std::string::npos) {
+        result[pos] = (char *) calloc(delim, sizeof(char *));
+        strncpy(result[pos], str.c_str(), delim);
+        str.erase(0, delim + 1);
+        pos++;
+            
+        if (pos >= bufsize) {
+            bufsize += bufsize;
+            result = (char **) realloc(result, bufsize * sizeof(char *));
+        }
+        
+        delim = str.find(" ");
+    }
+    
+    result[pos] = (char *) calloc(str.length(), sizeof(char *));
+    strcpy(result[pos], str.c_str());
+    result[++pos] = NULL;
+    
+    return const_cast<const char **>(result);
 }
 
 // download
@@ -103,60 +142,19 @@ void yap::Extract(std::string name, std::string file) {
 }
 
 // make
-void yap::Make(std::string path) {
-    const char *args[] = {
-        "make",
-        "-C",
-        path.c_str(),
-        NULL
-    };
-    
-    if (yap::launcher(args) == -1) {
-        std::cerr << "Compilation falied!\nerrno: " << errno << std::endl;
-        exit(-1);
-    }
-}
-
-// install
-void yap::Install(std::string path) {
-    const char *args[] = {
-        "make",
-        "install",
-        "clean",
-        "-C",
-        path.c_str(),
-        NULL
-    };
-    
-    if (yap::launcher(args) == -1) {
-        std::cerr << "Install falied!\nerrno: " << errno << std::endl;
-        exit(-1);
-    }
-}
-
-// uninstall
-void yap::Uninstall(std::string name) {
-    // variables
-    std::string path = "USR/yap/src";
-    chdir(path.c_str());
-    
-    const char *args[] = {
-        "make",
-        "uninstall",
-        "clean",
-        "-C",
-        name.c_str(),
-        NULL
-    };
-    
-    if (yap::launcher(args) == -1) {
-        std::cerr << "Uninstall falied!\nerrno: " << errno << std::endl;
-        exit(-1);
+void Make(std::vector<std::string> command) {
+    const char **args;
+    for (int i = 0; i < command.size(); i++) {
+        args = split_it(command[i]);
+        if (yap::launcher(args) == -1) {
+            std::cerr << "Compile falied!\nerrno: " << errno << std::endl;
+            exit(-1);
+        }
     }
 }
 
 // compile process
-void yap::Compile(std::string sourceLink, std::string name) {
+void yap::Compile(std::string s_link, std::string name, std::vector<std::string> install, std::vector<std::string> make) {
     // variables
     std::string path = "USR/yap/src";
     chdir(path.c_str());
@@ -165,11 +163,10 @@ void yap::Compile(std::string sourceLink, std::string name) {
     std::string file = std::regex_replace(name, REG, ""); // file name without .tar.gz
     
     std::string PREFIX = "../../..";
-    std::string PREFIX_FILE = file+"/config.mk";
     
     // download source
     std::cout << "Downloading..." << std::endl;
-    yap::Download(sourceLink, name);
+    yap::Download(s_link, name);
     std::cout << "Finished Downloading" << std::endl;
  
     // extract source   
@@ -178,11 +175,12 @@ void yap::Compile(std::string sourceLink, std::string name) {
     fs::remove(name);
     std::cout << "Finished Extracting" << std::endl;
     
+    chdir(file.c_str());
     // pre compile process
-    if(fs::exists(PREFIX_FILE)) {
+    if(fs::exists("config.mk")) {
         // get PREFIX
         std::ifstream fin;
-        fin.open(PREFIX_FILE);
+        fin.open("config.mk");
         
         std::string data;
         std::stringstream prefix_file;
@@ -193,22 +191,15 @@ void yap::Compile(std::string sourceLink, std::string name) {
         
         // replace PREFIX
         std::ofstream fout;
-        fout.open(PREFIX_FILE);
+        fout.open("config.mk");
         
-        std::regex REGF("\nPREFIX.*");
-        std::string new_prefix_file = std::regex_replace(prefix_file.str(), REGF, "\nPREFIX = "+PREFIX);
+        std::regex REG("\nPREFIX.*");
+        std::string new_prefix_file = std::regex_replace(prefix_file.str(), REG, "\nPREFIX = "+PREFIX);
         
         fout << new_prefix_file;
         fout.close();
     }
-    
-    // compile source
-    std::cout << "Compiling..." << std::endl;
-    Make(file);
-    std::cout << "Finished Compiling" << std::endl;
-    
-    // install source
-    std::cout << "Installing..." << std::endl;
-    Install(file);
-    std::cout << "Finished Installing" << std::endl;
+
+    // make
+    Make(make);
 }
