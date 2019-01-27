@@ -104,11 +104,11 @@ const char **split_it(std::string str) {
 
 // download
 void yap::Download(std::string url, std::string name){
-    std::string file = "-o"+name;
     const char* args[] = {
         "curl",
         url.c_str(),
-        file.c_str(),
+        "-o",
+        name.c_str(),
         "-s",
         "-L",
         NULL
