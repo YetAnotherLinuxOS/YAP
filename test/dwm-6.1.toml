@@ -1,0 +1,32 @@
+## made by Anaboth 1-28-2019 13:12:00
+## YALOS build helper
+
+dependencies = [
+    "libx11"
+]
+
+[info]
+name = "dwm"
+version = "6.1"
+description = "dwm is a dynamic window manager for X. It manages windows in tiled, monocle and floating layouts."
+manpage = "https://dwm.suckless.org/tutorial/"
+license = "MIT"
+
+[build]
+source = "https://dl.suckless.org/dwm/dwm-6.1.tar.gz"
+makefile = "Makefile"
+patches = [
+    "https://gist.github.com/anaboth/9c7cc1266f9b1a8ed76670a6cbbdb6f0"
+]
+
+make = [
+    "make"
+]
+
+install = [
+    "make install clean"
+]
+    
+uninstall = [
+    "make uninstall clean"
+]
