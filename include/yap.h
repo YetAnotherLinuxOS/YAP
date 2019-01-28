@@ -12,21 +12,31 @@
 
 namespace fs = std::experimental::filesystem;
 
+char** vec_to_array(std::vector<std::string>);
+void free_array(char**);
+std::vector<std::string> split(std::string, std::string = " ");
+
 namespace yap {
     // vector<string> getfile(string _regex_);
     std::vector<std::string> getfile(std::string);
     
+    // int launcher(vector<string> _commands_);
+    int launcher(std::vector<std::string>);
+
     // int launcher(const char _*command[]_);
-    int launcher(const char **);
+    int launcher(const char** command); /* only for legacy purposes */
     
     // void Download(string _sourceLink_, string _name_);
-    void Download(std::string, std::string);
+    void download(std::string, std::string);
     
     // void Extract(string _filename.tar.gz_);
-    void Extract(std::string, std::string);
+    void extract(std::string, std::string);
     
     // void Compile(string _sourceLink_, string _name_);
-    void Compile(std::string, std::string, std::vector<std::string>, std::vector<std::string>);
+    void compile(std::string, std::string, std::vector<std::string>, std::vector<std::string>);
+
+    // void Make(vector<string> _commands_);
+    void make(std::vector<std::string>);
     
     namespace toml_string {
         // string table(string _filename_, string _keyname_, string _tablename_);

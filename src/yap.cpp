@@ -65,8 +65,8 @@ std::vector<std::string> yap::toml_string::tarray(std::string filename, std::str
     return (*info);
 }
 
-// exec system commands
-int yap::launcher(const char **command) {
+// exec system commands - legacy
+int yap::launcher(const char** command) {
     if (!fork()) {
         if(execvp(command[0], (char*const*)command) == -1)
             return -1;
@@ -75,43 +75,29 @@ int yap::launcher(const char **command) {
     return 0;
 }
 
-// split string; pqp; PQP;
-const char **split_it(std::string str) {
-    int bufsize = 16, pos = 0;
-    char **result = (char **) calloc(bufsize, sizeof(char *));
-
-    size_t delim = str.find(" ");
-    while (delim != std::string::npos) {
-        result[pos] = (char *) calloc(delim, sizeof(char *));
-        strncpy(result[pos], str.c_str(), delim);
-        str.erase(0, delim + 1);
-        pos++;
-            
-        if (pos >= bufsize) {
-            bufsize += bufsize;
-            result = (char **) realloc(result, bufsize * sizeof(char *));
+// exec system commands
+int yap::launcher(std::vector<std::string> commands) {
+    char** args = vec_to_array(commands);
+    if (!fork()) {
+        if(execvp(commands[0].c_str(), args) == -1){
+            free_array(args);
+            return -1;
         }
-        
-        delim = str.find(" ");
     }
-    
-    result[pos] = (char *) calloc(str.length(), sizeof(char *));
-    strcpy(result[pos], str.c_str());
-    result[++pos] = NULL;
-    
-    return const_cast<const char **>(result);
+    wait(0);
+    free_array(args);
+    return 0;
 }
 
 // download
-void yap::Download(std::string url, std::string name){
-    const char* args[] = {
+void yap::download(std::string url, std::string name){
+    std::vector<std::string> args = {
         "curl",
-        url.c_str(),
+        url,
         "-o",
-        name.c_str(),
-        "-s",
+        name,
         "-L",
-        NULL
+        "-s"
     };
 
     if (yap::launcher(args) == -1) {
@@ -121,18 +107,17 @@ void yap::Download(std::string url, std::string name){
 }
 
 // extract
-void yap::Extract(std::string name, std::string file) {
+void yap::extract(std::string name, std::string file) {
     fs::create_directory(file);
-    const char *args[] = {
+    std::vector<std::string> args = {
         "tar",
         "-x",
         "-f",
-        name.c_str(),
+        name,
         "-C",
-        file.c_str(),
+        file,
         "--strip-components",
-        "1",
-        NULL
+        "1"
     };
     
     if (yap::launcher(args) == -1) {
@@ -142,19 +127,19 @@ void yap::Extract(std::string name, std::string file) {
 }
 
 // make
-void Make(std::vector<std::string> command) {
-    const char **args;
-    for (int i = 0; i < command.size(); i++) {
-        args = split_it(command[i]);
+void yap::make(std::vector<std::string> commands) {
+    std::vector<std::string> args;
+    for (auto command : commands) {
+        args = split(command);
         if (yap::launcher(args) == -1) {
-            std::cerr << "Compile falied!\nerrno: " << errno << std::endl;
+            std::cerr << "Compile failed!\nerrno: " << errno << std::endl;
             exit(-1);
         }
     }
 }
 
 // compile process
-void yap::Compile(std::string s_link, std::string name, std::vector<std::string> install, std::vector<std::string> make) {
+void yap::compile(std::string s_link, std::string name, std::vector<std::string> install, std::vector<std::string> make) {
     // variables
     std::string path = "USR/yap/src";
     chdir(path.c_str());
@@ -166,12 +151,12 @@ void yap::Compile(std::string s_link, std::string name, std::vector<std::string>
     
     // download source
     std::cout << "Downloading..." << std::endl;
-    yap::Download(s_link, name);
+    yap::download(s_link, name);
     std::cout << "Finished Downloading" << std::endl;
  
     // extract source   
     std::cout << "Extracting..." << std::endl;
-    yap::Extract(name, file);
+    yap::extract(name, file);
     fs::remove(name);
     std::cout << "Finished Extracting" << std::endl;
     
@@ -201,5 +186,40 @@ void yap::Compile(std::string s_link, std::string name, std::vector<std::string>
     }
 
     // make
-    Make(make);
+    yap::make(make);
 }
+
+
+char** vec_to_array(std::vector<std::string> vec){
+    char** a;
+    a = (char**)malloc(vec.size() * sizeof(char*));
+    for (int i = 0; i < vec.size(); ++i){
+        a[i] = (char*)malloc(vec[i].size() * sizeof(char));
+        strcpy(a[i], vec[i].c_str());
+    }
+    a[vec.size()] = NULL;
+    return a;
+}
+
+void free_array(char** arr){
+    int i = 0;
+    while(arr[i] != NULL)
+        free(arr[i++]);
+    free(arr);
+}
+
+
+std::vector<std::string> split(std::string string, std::string delimiter){
+    std::vector<std::string> buffer;
+    size_t x;
+
+    while((x = string.find(delimiter)) != -1){
+        buffer.push_back(string.substr(0,x));
+        string.erase(0, x+1);
+    }
+
+    buffer.push_back(string);
+    
+    return buffer;
+}
+
