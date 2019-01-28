@@ -191,10 +191,9 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
 
 
 char** vec_to_array(std::vector<std::string> vec){
-    char** a;
-    a = (char**)malloc(vec.size() * sizeof(char*));
+    char** a = new char*[vec.size()];
     for (int i = 0; i < vec.size(); ++i){
-        a[i] = (char*)malloc(vec[i].size() * sizeof(char));
+        a[i] = new char[vec[i].size()];
         strcpy(a[i], vec[i].c_str());
     }
     a[vec.size()] = NULL;
@@ -204,8 +203,8 @@ char** vec_to_array(std::vector<std::string> vec){
 void free_array(char** arr){
     int i = 0;
     while(arr[i] != NULL)
-        free(arr[i++]);
-    free(arr);
+        delete [] arr[i++];
+    delete [] arr;
 }
 
 
