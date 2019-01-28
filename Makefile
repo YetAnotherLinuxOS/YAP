@@ -14,5 +14,5 @@ yap: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm yap
-	rm src/*.o
+	rm src/*.o || echo
+	rm yap || echo
