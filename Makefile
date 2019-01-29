@@ -1,7 +1,7 @@
 ## YAP Makefile
 
 CXX = clang++
-CXXFLAGS = -lstdc++fs -std=c++17
+CXXFLAGS = -lstdc++fs -std=c++17 -Wall
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 BIN = yap

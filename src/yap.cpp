@@ -79,7 +79,7 @@ int yap::launcher(const char** command) {
 int yap::launcher(std::vector<std::string> commands) {
     char** args = vec_to_array(commands);
     if (!fork()) {
-        if(execvp(commands[0].c_str(), args) == -1){
+        if(execvp(args[0], args) == -1){
             free_array(args);
             return -1;
         }
@@ -126,13 +126,13 @@ void yap::extract(std::string name, std::string file) {
     }
 }
 
-// make
-void yap::make(std::vector<std::string> commands) {
+// run array commands
+void yap::run(std::vector<std::string> commands) {
     std::vector<std::string> args;
     for (auto command : commands) {
         args = split(command);
         if (yap::launcher(args) == -1) {
-            std::cerr << "Compile failed!\nerrno: " << errno << std::endl;
+            std::cerr << "Make failed!\nerrno: " << errno << std::endl;
             exit(-1);
         }
     }
@@ -147,7 +147,6 @@ void add_n(std::string name){
 
 // apply possible patches
 void yap::apply_patches(std::vector<std::string> patches){
-    if (patches.size() == 0) return;
     int i = 0;
     for (auto patch : patches) {
         yap::download(patch, "patch"+std::to_string(i));
@@ -172,11 +171,34 @@ void yap::apply_patches(std::vector<std::string> patches){
  *
 */
 
+void set_prefix(std::string PREFIX) {
+    // get PREFIX
+    std::ifstream fin;
+    fin.open("config.mk");
+        
+    std::string data;
+    std::stringstream prefix_file;
+    while (getline(fin, data))
+       prefix_file << data << std::endl;
+        
+    fin.close();
+        
+    // replace PREFIX
+    std::ofstream fout;
+    fout.open("config.mk");
+        
+    std::regex REG("\nPREFIX.*");
+    std::string new_prefix_file = std::regex_replace(prefix_file.str(), REG, "\nPREFIX = "+PREFIX);
+        
+    fout << new_prefix_file;
+    fout.close();
+}
+
 // compile process
 void yap::compile(std::string s_link, std::string name, std::vector<std::string> install, std::vector<std::string> make, std::vector<std::string> patches) {
     // variables
     std::string path = "USR/yap/src";
-    chdir(path.c_str());
+    chdir(path.c_str()); // change to PATH
     
     std::regex REG(".tar.gz");
     std::string file = std::regex_replace(name, REG, ""); // file name without .tar.gz
@@ -191,39 +213,22 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
     // extract source   
     std::cout << "Extracting..." << std::endl;
     yap::extract(name, file);
-    fs::remove(name);
     std::cout << "Finished Extracting" << std::endl;
+    fs::remove(name);
     
-    chdir(file.c_str());
-
-    yap::apply_patches(patches);
+    chdir(file.c_str()); // change to current source
 
     // pre compile process
-    if(fs::exists("config.mk")) {
-        // get PREFIX
-        std::ifstream fin;
-        fin.open("config.mk");
-        
-        std::string data;
-        std::stringstream prefix_file;
-        while (getline(fin, data))
-            prefix_file << data << std::endl;
-        
-        fin.close();
-        
-        // replace PREFIX
-        std::ofstream fout;
-        fout.open("config.mk");
-        
-        std::regex REG("\nPREFIX.*");
-        std::string new_prefix_file = std::regex_replace(prefix_file.str(), REG, "\nPREFIX = "+PREFIX);
-        
-        fout << new_prefix_file;
-        fout.close();
-    }
+    if(fs::exists("config.mk"))
+        set_prefix(PREFIX);
+	
+	if(patches.size() != 0)
+    	yap::apply_patches(patches);
 
-    // make
-    yap::make(make);
+    // make & install
+    yap::run(make);
+
+    yap::run(install);
 }
 
 

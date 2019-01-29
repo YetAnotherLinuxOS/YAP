@@ -35,9 +35,9 @@ namespace yap {
     // void compile(string _sourceLink_, string _name_);
     void compile(std::string, std::string, std::vector<std::string>, std::vector<std::string>, std::vector<std::string>);
 
-    // void make(vector<string> _commands_);
-    void make(std::vector<std::string>);
-    
+    // void run(vector<string> _commands_);
+    void run(std::vector<std::string>);
+
     // void apply_patches(vector<string> _patches_);
     void apply_patches(std::vector<std::string>);
 
