@@ -141,7 +141,7 @@ void yap::make(std::vector<std::string> commands) {
 void add_n(std::string name){
     std::ofstream file;
     file.open(name, std::ios::app);
-    file << " \n\n";
+    file << "\n\n";
     file.close();
 }
 
@@ -198,14 +198,8 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
 
     yap::apply_patches(patches);
 
-    /*
-     *
-     * Something in the pre compile process is causing a memory corruption
-     * 
-     */
-
     // pre compile process
-    /*if(fs::exists("config.mk")) {
+    if(fs::exists("config.mk")) {
         // get PREFIX
         std::ifstream fin;
         fin.open("config.mk");
@@ -226,7 +220,7 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
         
         fout << new_prefix_file;
         fout.close();
-    }*/
+    }
 
     // make
     yap::make(make);
