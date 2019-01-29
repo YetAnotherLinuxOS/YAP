@@ -26,18 +26,21 @@ namespace yap {
     // int launcher(const char _*command[]_);
     int launcher(const char** command); /* only for legacy purposes */
     
-    // void Download(string _sourceLink_, string _name_);
+    // void download(string _sourceLink_, string _name_);
     void download(std::string, std::string);
     
-    // void Extract(string _filename.tar.gz_);
+    // void extract(string _filename.tar.gz_);
     void extract(std::string, std::string);
     
-    // void Compile(string _sourceLink_, string _name_);
-    void compile(std::string, std::string, std::vector<std::string>, std::vector<std::string>);
+    // void compile(string _sourceLink_, string _name_);
+    void compile(std::string, std::string, std::vector<std::string>, std::vector<std::string>, std::vector<std::string>);
 
-    // void Make(vector<string> _commands_);
+    // void make(vector<string> _commands_);
     void make(std::vector<std::string>);
     
+    // void apply_patches(vector<string> _patches_);
+    void apply_patches(std::vector<std::string>);
+
     namespace toml_string {
         // string table(string _filename_, string _keyname_, string _tablename_);
         std::string table(std::string, std::string, std::string);

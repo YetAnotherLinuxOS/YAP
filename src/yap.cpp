@@ -138,8 +138,42 @@ void yap::make(std::vector<std::string> commands) {
     }
 }
 
+void add_n(std::string name){
+    std::ofstream file;
+    file.open(name, std::ios::app);
+    file << " \n\n";
+    file.close();
+}
+
+// apply possible patches
+void yap::apply_patches(std::vector<std::string> patches){
+    if (patches.size() == 0) return;
+    int i = 0;
+    for (auto patch : patches) {
+        yap::download(patch, "patch"+std::to_string(i));
+        add_n("patch"+std::to_string(i++));
+    }
+    for (int x = 0; x < i; ++x){
+        std::vector<std::string> buffer = {
+            "patch",
+            "-i",
+            "patch"+std::to_string(x)
+        };
+        if(yap::launcher(buffer) == -1){
+            std::cerr << "Failed to apply patches\nerrno" << errno << "\n";
+            exit(-1);
+        }
+    }
+}
+
+/*
+ *
+ * We need to separate this function!
+ *
+*/
+
 // compile process
-void yap::compile(std::string s_link, std::string name, std::vector<std::string> install, std::vector<std::string> make) {
+void yap::compile(std::string s_link, std::string name, std::vector<std::string> install, std::vector<std::string> make, std::vector<std::string> patches) {
     // variables
     std::string path = "USR/yap/src";
     chdir(path.c_str());
@@ -161,8 +195,17 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
     std::cout << "Finished Extracting" << std::endl;
     
     chdir(file.c_str());
+
+    yap::apply_patches(patches);
+
+    /*
+     *
+     * Something in the pre compile process is causing a memory corruption
+     * 
+     */
+
     // pre compile process
-    if(fs::exists("config.mk")) {
+    /*if(fs::exists("config.mk")) {
         // get PREFIX
         std::ifstream fin;
         fin.open("config.mk");
@@ -183,7 +226,7 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
         
         fout << new_prefix_file;
         fout.close();
-    }
+    }*/
 
     // make
     yap::make(make);

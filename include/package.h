@@ -5,12 +5,6 @@
 #include "cpptoml.h"
 #include "yap.h"
 
-/*
- *
- * TODO: Download package
- * probably using curl
-*/
-
 namespace yap {
     class Package {
     private:
@@ -24,6 +18,7 @@ namespace yap {
         std::vector<std::string> compile_make;
         std::vector<std::string> compile_install;
         std::vector<std::string> compile_uninstall;
+        std::vector<std::string> patches;
     public:
         std::string get_info();
         Package(std::string);
