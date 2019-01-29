@@ -16,7 +16,7 @@ license = "MIT"
 source = "https://dl.suckless.org/dwm/dwm-6.1.tar.gz"
 makefile = "Makefile"
 patches = [
-    "https://gist.github.com/anaboth/9c7cc1266f9b1a8ed76670a6cbbdb6f0"
+    "https://pastebin.com/raw/0sp3KN7d"
 ]
 
 make = [
