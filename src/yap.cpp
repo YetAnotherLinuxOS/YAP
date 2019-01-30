@@ -85,7 +85,7 @@ int yap::launcher(std::vector<std::string> commands) {
         }
     }
     wait(0);
-    free_array(args);
+    free_array(args);    
     return 0;
 }
 
@@ -132,7 +132,7 @@ void yap::run(std::vector<std::string> commands) {
     for (auto command : commands) {
         args = split(command);
         if (yap::launcher(args) == -1) {
-            std::cerr << "Make failed!\nerrno: " << errno << std::endl;
+            std::cerr << "Make & Install failed!\nerrno: " << errno << std::endl;
             exit(-1);
         }
     }
@@ -169,7 +169,7 @@ void yap::apply_patches(std::vector<std::string> patches){
  *
  * We need to separate this function!
  *
-*/
+ */
 
 void set_prefix(std::string PREFIX) {
     // get PREFIX
@@ -231,6 +231,12 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
     yap::run(install);
 }
 
+void free_array(char** arr){
+    int i = 0;
+    while(arr[i] != NULL)
+        delete [] arr[i++];
+    delete [] arr;
+}
 
 char** vec_to_array(std::vector<std::string> vec){
     char** a = new char*[vec.size()];
@@ -241,14 +247,6 @@ char** vec_to_array(std::vector<std::string> vec){
     a[vec.size()] = NULL;
     return a;
 }
-
-void free_array(char** arr){
-    int i = 0;
-    while(arr[i] != NULL)
-        delete [] arr[i++];
-    delete [] arr;
-}
-
 
 std::vector<std::string> split(std::string string, std::string delimiter){
     std::vector<std::string> buffer;
