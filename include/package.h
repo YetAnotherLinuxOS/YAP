@@ -24,6 +24,7 @@ namespace yap {
         Package(std::string);
         void Download();
         void Compile();
+        void Uninstall();
     };
 }
 

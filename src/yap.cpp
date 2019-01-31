@@ -127,12 +127,12 @@ void yap::extract(std::string name, std::string file) {
 }
 
 // run array commands
-void yap::run(std::vector<std::string> commands) {
+void yap::run(std::vector<std::string> commands, std::string name) {
     std::vector<std::string> args;
     for (auto command : commands) {
         args = split(command);
         if (yap::launcher(args) == -1) {
-            std::cerr << "Make & Install failed!\nerrno: " << errno << std::endl;
+            std::cerr << name << " failed!\nerrno: " << errno << std::endl;
             exit(-1);
         }
     }
@@ -206,14 +206,14 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
     std::string PREFIX = "../../..";
     
     // download source
-    std::cout << "Downloading..." << std::endl;
+    std::cout << ">>> Downloading..." << std::endl;
     yap::download(s_link, name);
-    std::cout << "Finished Downloading" << std::endl;
+    std::cout << "<<< Finished Downloading" << std::endl;
  
     // extract source   
-    std::cout << "Extracting..." << std::endl;
+    std::cout << ">>> Extracting..." << std::endl;
     yap::extract(name, file);
-    std::cout << "Finished Extracting" << std::endl;
+    std::cout << "<<< Finished Extracting" << std::endl;
     fs::remove(name);
     
     chdir(file.c_str()); // change to current source
@@ -226,9 +226,24 @@ void yap::compile(std::string s_link, std::string name, std::vector<std::string>
     	yap::apply_patches(patches);
 
     // make & install
-    yap::run(make);
+    std::cout << ">>> Compiling..." << std::endl;
+    yap::run(make, "Compile");
+    std::cout << "<<< Finished Compiling" << std::endl;
 
-    yap::run(install);
+    std::cout << ">>> Installing..." << std::endl;
+    yap::run(install, "Install");
+    std::cout << "<<< Finished Installing" << std::endl;
+}
+
+// uninstall
+void yap::uninstall(std::vector<std::string> c_uninstall, std::string pkg) {
+    // variables
+    std::string path = "USR/yap/src";
+    std::string pkg_path = path+"/"+pkg;
+    chdir(pkg_path.c_str()); // change to source path
+
+    // uninstall
+    yap::run(c_uninstall, "Uninstall");
 }
 
 void free_array(char** arr){
