@@ -25,6 +25,8 @@ public:
   Package(std::string);
   void Download();
   void Compile();
+  void Uninstall();
 };
 } // namespace yap
+
 #endif // PACKAGE

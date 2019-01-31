@@ -57,5 +57,5 @@ void yap::Package::Compile() {
 }
 
 void yap::Package::Uninstall() {
-    yap::uninstall(compile_uninstall, name+version);
+  yap::uninstall(compile_uninstall, name + version);
 }

@@ -36,8 +36,11 @@ void extract(std::string, std::string);
 void compile(std::string, std::string, std::vector<std::string>,
              std::vector<std::string>, std::vector<std::string>);
 
-// void run(vector<string> _commands_);
-void run(std::vector<std::string>);
+// void run(vector<string> _commands_, string _name_);
+void run(std::vector<std::string>, std::string);
+
+// void uninstall(vector<string> _command_, string _pkg_);
+void uninstall(std::vector<std::string>, std::string);
 
 // void apply_patches(vector<string> _patches_);
 void apply_patches(std::vector<std::string>);
