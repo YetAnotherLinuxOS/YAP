@@ -1,7 +1,7 @@
 ## made by Raqui333 1-14-2019 22:25:00
 ## YALOS build helper
-dependencies = [ 
-    "libx11" 
+dependencies = [
+    "libx11"
 ]
 
 [info]
@@ -15,15 +15,15 @@ license = "MIT"
 source = "https://github.com/robm/dzen/archive/master.tar.gz"
 makefile = "Makefile"
 
-make = [ 
-    "make" 
+make = [
+    "make"
 ]
 
-install = [ 
+install = [
     "make install",
     "make clean"
 ]
 
-uninstall = [ 
-    "make uninstall clean" 
+uninstall = [
+    "make uninstall clean"
 ]
