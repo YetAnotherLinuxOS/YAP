@@ -27,5 +27,4 @@ public:
   void Compile();
 };
 } // namespace yap
-
 #endif // PACKAGE

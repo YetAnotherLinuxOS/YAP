@@ -55,3 +55,7 @@ void yap::Package::Compile() {
   yap::compile(source_link, name + version + ".tar.gz", compile_install,
                compile_make, patches);
 }
+
+void yap::Package::Uninstall() {
+    yap::uninstall(compile_uninstall, name+version);
+}
