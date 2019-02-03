@@ -4,6 +4,8 @@ project(yap)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_FLAGS "-Wall -Wno-unused-command-line-argument")
+set(CMAKE_GENERATOR Ninja)
 aux_source_directory("src" SOURCES)
 
 add_executable(yap ${SOURCES})
