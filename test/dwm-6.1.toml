@@ -1,8 +1,10 @@
 ## made by Anaboth 1-28-2019 13:12:00
 ## YALOS build helper
 
+## NO DZEN IS NOT A DEPENDENCY IT'S JUST A TEST
+
 dependencies = [
-    "libx11"
+    "dzen-0.9.5"
 ]
 
 [info]
@@ -15,6 +17,7 @@ license = "MIT"
 [build]
 source = "https://dl.suckless.org/dwm/dwm-6.1.tar.gz"
 makefile = "Makefile"
+compression_format = ".tar.gz"
 patches = [
     "https://pastebin.com/raw/0sp3KN7d"
 ]

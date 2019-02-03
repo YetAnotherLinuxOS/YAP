@@ -46,9 +46,7 @@ int main(int argc, char *argv[]) {
     }
 
     yap::Package pkg(argv[2]);
-    std::cout << ">>> Downloading...\n";
     pkg.Download();
-    std::cout << "<<< Finished Downloading\n";
   } else if (option == "-i" | option == "--install") {
     if (argv[2] == NULL) {
       std::cout << "yap: no package option" << std::endl;
@@ -56,6 +54,9 @@ int main(int argc, char *argv[]) {
     }
 
     yap::Package pkg(argv[2]);
+    pkg.Download();
+    pkg.Extract();
+    chdir(pkg.GetNameVer().c_str());
     pkg.Compile();
   } else if (option == "-u" | option == "--uninstall") {
     if (argv[2] == NULL) {

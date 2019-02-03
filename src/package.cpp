@@ -36,6 +36,8 @@ yap::Package::Package(std::string path) {
   manpage = toml_string::table(pkgs[0], "manpage", "info");
   license = toml_string::table(pkgs[0], "license", "info");
   source_link = toml_string::table(pkgs[0], "source", "build");
+  compression_format =
+      toml_string::table(pkgs[0], "compression_format", "build");
 
   // get array from 'dependencies' key in file.toml
   dependecies = toml_string::array(pkgs[0], "dependencies");
@@ -47,13 +49,22 @@ yap::Package::Package(std::string path) {
   compile_uninstall = toml_string::tarray(pkgs[0], "uninstall", "build");
 }
 
+std::string yap::Package::GetNameVer() { return name + version; }
+
 void yap::Package::Download() {
-  yap::download(source_link, name + version + ".tar.gz");
+  yap::download(source_link, name + version + compression_format);
 }
 
-void yap::Package::Compile() {
-  yap::compile(source_link, name + version + ".tar.gz", compile_install,
-               compile_make, patches);
+void yap::Package::Compile() { yap::compile(compile_make, patches); }
+
+void yap::Package::Extract() {
+  yap::extract(name + version + compression_format, name + version);
+}
+
+bool yap::Package::IsInstalled() { return installed; }
+
+void yap::Package::PreCompile() { /* TODO: Implement pre compile options based
+                                     on ybh */
 }
 
 void yap::Package::Uninstall() {

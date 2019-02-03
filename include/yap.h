@@ -33,8 +33,7 @@ void download(std::string, std::string);
 void extract(std::string, std::string);
 
 // void compile(string _sourceLink_, string _name_);
-void compile(std::string, std::string, std::vector<std::string>,
-             std::vector<std::string>, std::vector<std::string>);
+void compile(std::vector<std::string>, std::vector<std::string>);
 
 // void run(vector<string> _commands_, string _name_);
 void run(std::vector<std::string>, std::string);
