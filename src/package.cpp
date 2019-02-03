@@ -58,7 +58,7 @@ void yap::Package::Download() {
 void yap::Package::Compile() { yap::compile(compile_make, patches); }
 
 void yap::Package::Extract() {
-  yap::extract(name + version + compression_format, name + version);
+  yap::extract(name + version + compression_format, compression_format, name + version);
 }
 
 bool yap::Package::IsInstalled() { return installed; }

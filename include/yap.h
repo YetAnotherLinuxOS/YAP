@@ -30,7 +30,7 @@ int launcher(const char **command); /* only for legacy purposes */
 void download(std::string, std::string);
 
 // void extract(string _filename.tar.gz_);
-void extract(std::string, std::string);
+void extract(std::string, std::string, std::string);
 
 // void compile(string _sourceLink_, string _name_);
 void compile(std::vector<std::string>, std::vector<std::string>);

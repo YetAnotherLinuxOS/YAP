@@ -105,10 +105,19 @@ void yap::download(std::string url, std::string name) {
 }
 
 // extract
-void yap::extract(std::string name, std::string file) {
-  fs::create_directory(file);
-  std::vector<std::string> args = {
-      "tar", "-x", "-f", name, "-C", file, "--strip-components", "1"};
+void yap::extract(std::string name, std::string compression_format,
+                  std::string directory) {
+  fs::create_directory(directory);
+  std::vector<std::string> args;
+  if (compression_format == ".tar.gz")
+    args = {"tar", "-x", "-f", name, "-C", directory, "--strip-components",
+            "1"};
+  else if (compression_format == ".zip")
+    args = {"unzip", name, "-d", directory};
+  else {
+    std::cerr << "Compression not supported\n";
+    exit(-1);
+  }
 
   if (yap::launcher(args) == -1) {
     std::cerr << "Extract falied!\nerrno: " << errno << std::endl;
@@ -202,7 +211,7 @@ void free_array(char **arr) {
 }
 
 char **vec_to_array(std::vector<std::string> vec) {
-  char **a = new char *[vec.size()+1];
+  char **a = new char *[vec.size() + 1];
   for (int i = 0; i < vec.size(); ++i) {
     a[i] = new char[vec[i].size()];
     strcpy(a[i], vec[i].c_str());
