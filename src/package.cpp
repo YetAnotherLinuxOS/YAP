@@ -17,36 +17,27 @@ std::string yap::Package::get_info() {
   return info.str();
 }
 
-yap::Package::Package(std::string path) {
-  // if more than 1 pkgs is found; display a list with it and exit
-  std::vector<std::string> pkgs = yap::getfile(path);
-  if (pkgs.size() > 1) {
-    for (const auto &pkg : pkgs)
-      std::cout << pkg << std::endl;
-    exit(-1); // maybe exit (-1)?
-  } else if (pkgs.size() == 0) {
-    std::cout << "yap: no package found" << std::endl;
-    exit(-1); // maybe exit (-1)?
-  }
+yap::Package::Package(std::string pkg) {
+  // get the newest package version
+  std::string ybh = "test/" + pkg + "/" + yap::get_ybh(pkg);
 
   // get strings from 'info' table in file.toml
-  name = toml_string::table(pkgs[0], "name", "info");
-  version = toml_string::table(pkgs[0], "version", "info");
-  description = toml_string::table(pkgs[0], "description", "info");
-  manpage = toml_string::table(pkgs[0], "manpage", "info");
-  license = toml_string::table(pkgs[0], "license", "info");
-  source_link = toml_string::table(pkgs[0], "source", "build");
-  compression_format =
-      toml_string::table(pkgs[0], "compression_format", "build");
+  name = toml_string::table(ybh, "name", "info");
+  version = toml_string::table(ybh, "version", "info");
+  description = toml_string::table(ybh, "description", "info");
+  manpage = toml_string::table(ybh, "manpage", "info");
+  license = toml_string::table(ybh, "license", "info");
+  source_link = toml_string::table(ybh, "source", "build");
+  compression_format = toml_string::table(ybh, "compression_format", "build");
 
   // get array from 'dependencies' key in file.toml
-  dependecies = toml_string::array(pkgs[0], "dependencies");
+  dependecies = toml_string::array(ybh, "dependencies");
 
   // get array from table 'build'
-  patches = toml_string::tarray(pkgs[0], "patches", "build");
-  compile_make = toml_string::tarray(pkgs[0], "make", "build");
-  compile_install = toml_string::tarray(pkgs[0], "install", "build");
-  compile_uninstall = toml_string::tarray(pkgs[0], "uninstall", "build");
+  patches = toml_string::tarray(ybh, "patches", "build");
+  compile_make = toml_string::tarray(ybh, "make", "build");
+  compile_install = toml_string::tarray(ybh, "install", "build");
+  compile_uninstall = toml_string::tarray(ybh, "uninstall", "build");
 }
 
 std::string yap::Package::GetNameVer() { return name + version; }
@@ -58,7 +49,8 @@ void yap::Package::Download() {
 void yap::Package::Compile() { yap::compile(compile_make, patches); }
 
 void yap::Package::Extract() {
-  yap::extract(name + version + compression_format, compression_format, name + version);
+  yap::extract(name + version + compression_format, compression_format,
+               name + version);
 }
 
 bool yap::Package::IsInstalled() { return installed; }

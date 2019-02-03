@@ -1,5 +1,18 @@
 #include "../include/yap.h"
 
+// get latest ybh from a given package
+std::string yap::get_ybh(std::string name) {
+  if (!fs::exists("test/" + name))
+    exit(-1);
+  fs::path path = "test/" + name;
+  std::vector<std::string> versions;
+  for (auto file : fs::directory_iterator(path)) {
+    if (fs::is_regular_file(file))
+      versions.push_back(file.path().filename());
+  }
+  return std::max_element(versions.begin(), versions.end())->c_str();
+}
+
 // function that search for REGEX filename in directory
 std::vector<std::string> yap::getfile(std::string rex) {
   fs::path ybh_path = "test/"; // directory to read; '/' on the end IS necessary

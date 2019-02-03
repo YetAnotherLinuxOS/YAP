@@ -20,6 +20,9 @@ namespace yap {
 // vector<string> getfile(string _regex_);
 std::vector<std::string> getfile(std::string);
 
+// string get_ybh(string package_name);
+std::string get_ybh(std::string);
+
 // int launcher(vector<string> _commands_);
 int launcher(std::vector<std::string>);
 
