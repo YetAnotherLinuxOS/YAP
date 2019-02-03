@@ -86,8 +86,7 @@ int yap::launcher(std::vector<std::string> commands) {
   char **args = vec_to_array(commands);
   if (!fork()) {
     if (execvp(args[0], args) == -1) {
-      free_array(args);
-      return -1;
+      exit(-1);
     }
   }
   wait(0);
@@ -130,20 +129,18 @@ void yap::run(std::vector<std::string> commands, std::string name) {
 }
 
 void add_n(std::string name) {
-  std::ofstream file;
-  file.open(name, std::ios::app);
-  file << "\n\n";
-  file.close();
+  std::ofstream file(name, std::ios::app);
+  file << "  \n\n";
 }
 
 // apply possible patches
 void yap::apply_patches(std::vector<std::string> patches) {
   int i = 0;
   for (auto patch : patches) {
-    yap::download(patch, "patch" + std::to_string(i));
-    add_n("patch" + std::to_string(i));
-    std::vector<std::string> buffer = {"patch", "-i",
-                                       "patch" + std::to_string(i)};
+    std::string name = "patch_" + std::to_string(i) + ".patch";
+    yap::download(patch, name);
+    add_n(name);
+    std::vector<std::string> buffer = {"patch", "-i", name};
     if (yap::launcher(buffer) == -1) {
       std::cerr << "Failed to apply patches\nerrno" << errno << "\n";
       exit(-1);
@@ -151,12 +148,6 @@ void yap::apply_patches(std::vector<std::string> patches) {
     ++i;
   }
 }
-
-/*
- *
- * We need to separate this function!
- *
- */
 
 void set_prefix(std::string PREFIX) {
   // get PREFIX
@@ -211,7 +202,7 @@ void free_array(char **arr) {
 }
 
 char **vec_to_array(std::vector<std::string> vec) {
-  char **a = new char *[vec.size()];
+  char **a = new char *[vec.size()+1];
   for (int i = 0; i < vec.size(); ++i) {
     a[i] = new char[vec[i].size()];
     strcpy(a[i], vec[i].c_str());
