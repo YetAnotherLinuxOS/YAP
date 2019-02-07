@@ -58,6 +58,20 @@ std::string yap::toml_string::table(std::string filename, std::string keyname,
   return (*info);
 }
 
+std::map<std::string, std::string>
+yap::toml_string::map_table(std::string filename, std::string tablename) {
+  auto table = cpptoml::parse_file(filename)->get_table(tablename);
+  if (!table)
+    exit(-1);
+  auto it = table->begin();
+  std::map<std::string, std::string> buff;
+  while (it != table->end()) {
+    buff[it->first] = it->second->as<std::string>()->get();
+    ++it;
+  }
+  return buff;
+}
+
 // get info from arrays
 std::vector<std::string> yap::toml_string::array(std::string filename,
                                                  std::string keyname) {

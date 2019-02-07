@@ -4,6 +4,7 @@
 #include "cpptoml.h"
 #include "yap.h"
 #include <string>
+#include <map>
 
 namespace yap {
 class Package {
@@ -15,7 +16,9 @@ private:
   std::string description;
   std::string source_link;
   std::string compression_format;
-  std::vector<std::string> dependecies;
+  //std::vector<std::string> dependecies;
+  std::map<std::string, std::string> dependencies;
+  std::map<std::string, std::string> features;
   std::vector<std::string> compile_make;
   std::vector<std::string> compile_install;
   std::vector<std::string> compile_uninstall;

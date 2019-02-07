@@ -3,9 +3,14 @@
 
 ## NO DZEN IS NOT A DEPENDENCY IT'S JUST A TEST
 
-dependencies = [
-    "dzen-0.9.5"
-]
+[dependencies]
+dzen = ">=0.9.5"
+libx11 = ">=1.1"
+
+[features]
+performance = "-O3"
+space = "-Os"
+foo = "bar"
 
 [info]
 name = "dwm"

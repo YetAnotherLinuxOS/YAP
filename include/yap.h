@@ -8,6 +8,7 @@
 #include <iostream>
 #include <regex>
 #include <sys/wait.h>
+#include <map>
 #include <unistd.h>
 
 namespace fs = std::experimental::filesystem;
@@ -57,6 +58,8 @@ std::vector<std::string> array(std::string, std::string);
 //  vector<string> tarray(string _filename_, string _keyname_, string
 //  _tablename_);
 std::vector<std::string> tarray(std::string, std::string, std::string);
+
+std::map<std::string, std::string> map_table(std::string, std::string);
 } // namespace toml_string
 } // namespace yap
 
