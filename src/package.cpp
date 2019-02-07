@@ -4,9 +4,9 @@ std::string yap::Package::get_info() {
   std::stringstream info;
   info << "Package: " << name << "-" << version << std::endl;
 
-  auto print_map = [&info](std::map<std::string, std::string> map){
+  auto print_map = [&info](std::map<std::string, std::string> map) {
     auto it = map.begin();
-    while(it != map.end()){
+    while (it != map.end()) {
       info << "\tkey: " << it->first << "\n\tvalue: " << it->second << "\n\n";
       ++it;
     }
@@ -18,11 +18,15 @@ std::string yap::Package::get_info() {
   info << "\nManpage       :\t" << manpage;
   info << "\nLicense       :\t" << license;
 
-  info << "\n\nDependencies\n";
-  print_map(dependencies);
+  if (!dependencies.empty()) {
+    info << "\n\nDependencies\n";
+    print_map(dependencies);
+  }
 
-  info << "\n\nFeatures\n";
-  print_map(features);
+  if (!features.empty()) {
+    info << "\n\nFeatures\n";
+    print_map(features);
+  }
 
   return info.str();
 }
@@ -41,7 +45,7 @@ yap::Package::Package(std::string pkg) {
   compression_format = toml_string::table(ybh, "compression_format", "build");
 
   // get array from 'dependencies' key in file.toml
-  //dependecies = toml_string::array(ybh, "dependencies");
+  // dependecies = toml_string::array(ybh, "dependencies");
   dependencies = toml_string::map_table(ybh, "dependencies");
   features = toml_string::map_table(ybh, "features");
 

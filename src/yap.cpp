@@ -60,11 +60,11 @@ std::string yap::toml_string::table(std::string filename, std::string keyname,
 
 std::map<std::string, std::string>
 yap::toml_string::map_table(std::string filename, std::string tablename) {
+  std::map<std::string, std::string> buff;
   auto table = cpptoml::parse_file(filename)->get_table(tablename);
   if (!table)
-    exit(-1);
+    return buff;
   auto it = table->begin();
-  std::map<std::string, std::string> buff;
   while (it != table->end()) {
     buff[it->first] = it->second->as<std::string>()->get();
     ++it;

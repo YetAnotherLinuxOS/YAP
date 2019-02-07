@@ -6,9 +6,9 @@
 #include <errno.h>
 #include <experimental/filesystem>
 #include <iostream>
+#include <map>
 #include <regex>
 #include <sys/wait.h>
-#include <map>
 #include <unistd.h>
 
 namespace fs = std::experimental::filesystem;
