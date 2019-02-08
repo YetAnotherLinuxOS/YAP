@@ -13,56 +13,66 @@
  *
  */
 
-int main(int argc, char *argv[]) {
-  // test if the first arg is NULL or not
-  std::string option = argv[1] != NULL ? std::string(argv[1]) : "";
+int main(int argc, char** argv) {
+  // convert C array to C++ vector
+  std::vector<std::string> options;
+  
+  for (unsigned i = 0; i <= argc; ++i) {
+    if (argv[i] == NULL)
+      options.push_back("");
+    else
+      options.push_back((std::string) argv[i]);
+  }
 
   // help menssage
   std::stringstream help;
   help << "Usage: yap [option] [arg]\n\n";
-  help << "-h/--help        print this menssage and leave\n";
-  help << "-i/--install     install a program\n";
-  help << "-q/--info        get information about a program\n";
-  help << "-d/--download    only downloads the files\n";
-  help << "-u/--uninstall   uninstall a program\n";
+  help << "-h, --help              print this menssage and leave\n";
+  help << "-i, --install    <pkg>  install a program\n";
+  help << "-q, --info       <pkg>  get information about a program\n";
+  help << "-d, --download   <pkg>  only downloads the files\n";
+  help << "-u, --uninstall  <pkg>  uninstall a program\n";
+  help << "-s, --search     <rex>  search for packages\n";
 
   // get options and do events based on it
-  if (option == "-h" || option == "--help" || option.empty())
+  if (options[1] == "-h" | options[1] == "--help" | options[1].empty()) {
+    
     std::cout << help.str() << std::endl;
+    
+  } else if (options[1] == "-q" | options[1] == "--info") {
 
-  if (!option.empty() && argv[2] != NULL) {
-    if (option == "-q" || option == "--info") {
+    yap::Package pkg(options[2]);
+    std::string info = pkg.get_info();
+    std::cout << info << "\n";
 
-      yap::Package pkg(argv[2]);
-      std::string info = pkg.get_info();
-      std::cout << info << "\n";
+  } else if (options[1] == "-d" | options[1] == "--download") {
 
-    } else if (option == "-d" | option == "--download") {
+    yap::Package pkg(options[2]);
+    pkg.Download();
 
-      yap::Package pkg(argv[2]);
-      pkg.Download();
+  } else if (options[1] == "-i" | options[1] == "--install") {
 
-    } else if (option == "-i" | option == "--install") {
+    yap::Package pkg(options[2]);
+    pkg.Download();
+    pkg.Extract();
+    chdir(pkg.GetNameVer().c_str());
+    pkg.Compile();
 
-      yap::Package pkg(argv[2]);
-      pkg.Download();
-      pkg.Extract();
-      chdir(pkg.GetNameVer().c_str());
-      pkg.Compile();
+  } else if (options[1] == "-u" | options[1] == "--uninstall") {
 
-    } else if (option == "-u" | option == "--uninstall") {
+    yap::Package pkg(options[2]);
+    pkg.Uninstall();
 
-      yap::Package pkg(argv[2]);
-      pkg.Uninstall();
-
-    } else {
-      std::cout << "yap: no such option: '" << argv[1] << "'" << std::endl;
-      return 2;
-    }
-
+  } else if (options[1] == "-s" | options[1] == "--search") {
+    
+    for (auto& pkg : search(options[2]))
+        std::cout << pkg << std::endl;
+    
   } else {
-    std::cout << "yap: no package option" << std::endl;
+    
+    std::cout << "yap: no such option: '" << options[1] << "'" << std::endl;
     return 2;
+  
   }
 
   return 0;
