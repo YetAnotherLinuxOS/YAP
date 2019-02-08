@@ -13,15 +13,15 @@
  *
  */
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   // convert C array to C++ vector
   std::vector<std::string> options;
-  
+
   for (unsigned i = 0; i <= argc; ++i) {
     if (argv[i] == NULL)
       options.push_back("");
     else
-      options.push_back((std::string) argv[i]);
+      options.push_back((std::string)argv[i]);
   }
 
   // help menssage
@@ -36,9 +36,9 @@ int main(int argc, char** argv) {
 
   // get options and do events based on it
   if (options[1] == "-h" | options[1] == "--help" | options[1].empty()) {
-    
+
     std::cout << help.str() << std::endl;
-    
+
   } else if (options[1] == "-q" | options[1] == "--info") {
 
     yap::Package pkg(options[2]);
@@ -64,15 +64,14 @@ int main(int argc, char** argv) {
     pkg.Uninstall();
 
   } else if (options[1] == "-s" | options[1] == "--search") {
-    
-    for (auto& pkg : search(options[2]))
-        std::cout << pkg << std::endl;
-    
+
+    for (auto &pkg : search(options[2]))
+      std::cout << pkg << std::endl;
+
   } else {
-    
+
     std::cout << "yap: no such option: '" << options[1] << "'" << std::endl;
     return 2;
-  
   }
 
   return 0;
