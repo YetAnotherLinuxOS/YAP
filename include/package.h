@@ -6,6 +6,8 @@
 #include <map>
 #include <string>
 
+std::vector<std::string> search(std::string);
+
 namespace yap {
 class Package {
 private:
