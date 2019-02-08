@@ -32,6 +32,11 @@ std::string yap::Package::get_info() {
 }
 
 yap::Package::Package(std::string pkg) {
+  if (pkg.empty()) {
+    std::cout << "yap: no package option" << std::endl;
+    exit(-1);
+  }
+
   // get the newest package version
   std::string ybh = "test/" + pkg + "/" + yap::get_ybh(pkg);
 
@@ -77,4 +82,28 @@ void yap::Package::PreCompile() { /* TODO: Implement pre compile options based
 
 void yap::Package::Uninstall() {
   yap::uninstall(compile_uninstall, name + version);
+}
+
+std::vector<std::string> search(std:: string reg) {
+    std::regex REX(reg + ".*");
+    std::smatch m;
+    
+    std::vector<std::string> all, latests, matches;
+    
+    fs::path path = "test/";
+    for (auto& sub_path : fs::directory_iterator(path)) {
+        for (auto& file : fs::directory_iterator(sub_path)) {
+            if (fs::is_regular_file(file))
+               all.push_back((std::string) sub_path.path().filename() + "/" + (std::string) file.path().filename());
+        }
+        latests.push_back(std::max_element(all.begin(), all.end())->c_str());
+        all.erase(all.begin(), all.end());
+    }
+    
+    for (auto& elem : latests) {
+        if(std::regex_match(elem, m, REX))
+            matches.push_back(m[0]);
+    }
+
+    return matches;
 }
