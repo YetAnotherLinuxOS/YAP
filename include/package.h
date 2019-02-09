@@ -8,8 +8,6 @@
 
 std::vector<std::string> search(std::string);
 
-template <class T> std::map<std::string, std::string> map_table(T, std::string);
-
 namespace yap {
 class Package {
 private:
