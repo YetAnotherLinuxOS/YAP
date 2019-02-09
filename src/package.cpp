@@ -31,34 +31,51 @@ std::string yap::Package::get_info() {
   return info.str();
 }
 
+template <class T>
+std::map<std::string, std::string> map_table(T config, std::string tablename) {
+  std::map<std::string, std::string> buff;
+  auto table = config->get_table(tablename);
+  if (!table)
+    return buff;
+  auto it = table->begin();
+  while (it != table->end()) {
+    buff[it->first] = it->second->template as<std::string>()->get();
+    ++it;
+  }
+  return buff;
+}
+
 yap::Package::Package(std::string pkg) {
   if (pkg.empty()) {
     std::cout << "yap: no package option" << std::endl;
     exit(-1);
   }
 
-  // get the newest package version
-  std::string ybh = "test/" + pkg + "/" + yap::get_ybh(pkg);
+  // parse file
+  auto config = cpptoml::parse_file("test/" + pkg + "/" + yap::get_ybh(pkg));
 
-  // get strings from 'info' table in file.toml
-  name = toml_string::table(ybh, "name", "info");
-  version = toml_string::table(ybh, "version", "info");
-  description = toml_string::table(ybh, "description", "info");
-  manpage = toml_string::table(ybh, "manpage", "info");
-  license = toml_string::table(ybh, "license", "info");
-  source_link = toml_string::table(ybh, "source", "build");
-  compression_format = toml_string::table(ybh, "compression_format", "build");
+  // info
+  auto info = config->get_table("info");
 
-  // get array from 'dependencies' key in file.toml
-  // dependecies = toml_string::array(ybh, "dependencies");
-  dependencies = toml_string::map_table(ybh, "dependencies");
-  features = toml_string::map_table(ybh, "features");
+  name = *(info->get_as<std::string>("name"));
+  version = *(info->get_as<std::string>("version"));
+  description = *(info->get_as<std::string>("description"));
+  manpage = *(info->get_as<std::string>("manpage"));
+  license = *(info->get_as<std::string>("license"));
+  source_link = *(info->get_as<std::string>("source"));
+  compression_format = *(info->get_as<std::string>("compression_format"));
 
-  // get array from table 'build'
-  patches = toml_string::tarray(ybh, "patches", "build");
-  compile_make = toml_string::tarray(ybh, "make", "build");
-  compile_install = toml_string::tarray(ybh, "install", "build");
-  compile_uninstall = toml_string::tarray(ybh, "uninstall", "build");
+  // build
+  auto build = config->get_table("build");
+
+  patches = *(build->get_array_of<std::string>("patches"));
+  compile_make = *(build->get_array_of<std::string>("make"));
+  compile_install = *(build->get_array_of<std::string>("install"));
+  compile_uninstall = *(build->get_array_of<std::string>("uninstall"));
+
+  // tables map
+  dependencies = map_table(config, "dependencies");
+  features = map_table(config, "features");
 }
 
 std::string yap::Package::GetNameVer() { return name + version; }
