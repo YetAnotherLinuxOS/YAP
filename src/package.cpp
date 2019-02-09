@@ -5,11 +5,8 @@ std::string yap::Package::get_info() {
   info << "Package: " << name << "-" << version << std::endl;
 
   auto print_map = [&info](std::map<std::string, std::string> map) {
-    auto it = map.begin();
-    while (it != map.end()) {
+    for (auto it = map.begin(); it != map.end(); ++it)
       info << "\tkey: " << it->first << "\n\tvalue: " << it->second << "\n\n";
-      ++it;
-    }
   };
 
   info << "\nName          :\t" << name;
@@ -31,20 +28,6 @@ std::string yap::Package::get_info() {
   return info.str();
 }
 
-template <class T>
-std::map<std::string, std::string> map_table(T config, std::string tablename) {
-  std::map<std::string, std::string> buff;
-  auto table = config->get_table(tablename);
-  if (!table)
-    return buff;
-  auto it = table->begin();
-  while (it != table->end()) {
-    buff[it->first] = it->second->template as<std::string>()->get();
-    ++it;
-  }
-  return buff;
-}
-
 yap::Package::Package(std::string pkg) {
   if (pkg.empty()) {
     std::cout << "yap: no package option" << std::endl;
@@ -53,6 +36,17 @@ yap::Package::Package(std::string pkg) {
 
   // parse file
   auto config = cpptoml::parse_file("test/" + pkg + "/" + yap::get_ybh(pkg));
+
+  // get map from tables
+  auto map_table = [&config](std::string tablename) {
+    std::map<std::string, std::string> buff;
+    auto table = config->get_table(tablename);
+    if (!table)
+      return buff;
+    for (auto it = table->begin(); it != table->end(); ++it)
+      buff[it->first] = it->second->template as<std::string>()->get();
+    return buff;
+  };
 
   // info
   auto info = config->get_table("info");
@@ -74,8 +68,8 @@ yap::Package::Package(std::string pkg) {
   compile_uninstall = *(build->get_array_of<std::string>("uninstall"));
 
   // tables map
-  dependencies = map_table(config, "dependencies");
-  features = map_table(config, "features");
+  dependencies = map_table("dependencies");
+  features = map_table("features");
 }
 
 std::string yap::Package::GetNameVer() { return name + version; }
