@@ -33,20 +33,6 @@ void extract(std::string, std::string, std::string);
 void compile(std::vector<std::string>, std::vector<std::string>);
 void uninstall(std::vector<std::string>, std::string);
 void apply_patches(std::vector<std::string>);
-
-namespace toml_string {
-// string table(string _filename_, string _keyname_, string _tablename_);
-std::string table(std::string, std::string, std::string);
-
-// vector<string> array(string _filename_, string _keyname_);
-std::vector<std::string> array(std::string, std::string);
-
-//  vector<string> tarray(string _filename_, string _keyname_, string
-//  _tablename_);
-std::vector<std::string> tarray(std::string, std::string, std::string);
-
-std::map<std::string, std::string> map_table(std::string, std::string);
-} // namespace toml_string
 } // namespace yap
 
 #endif
