@@ -62,12 +62,12 @@ yap::Package::Package(std::string pkg) {
   description = *(info->get_as<std::string>("description"));
   manpage = *(info->get_as<std::string>("manpage"));
   license = *(info->get_as<std::string>("license"));
-  source_link = *(info->get_as<std::string>("source"));
-  compression_format = *(info->get_as<std::string>("compression_format"));
 
   // build
   auto build = config->get_table("build");
 
+  source_link = *(build->get_as<std::string>("source"));
+  compression_format = *(build->get_as<std::string>("compression_format"));
   patches = *(build->get_array_of<std::string>("patches"));
   compile_make = *(build->get_array_of<std::string>("make"));
   compile_install = *(build->get_array_of<std::string>("install"));
