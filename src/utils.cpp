@@ -13,16 +13,6 @@ std::string yap::get_ybh(std::string name) {
   return std::max_element(versions.begin(), versions.end())->c_str();
 }
 
-// exec system commands - legacy
-int yap::launcher(const char **command) {
-  if (!fork()) {
-    if (execvp(command[0], (char *const *)command) == -1)
-      return -1;
-  }
-  wait(0);
-  return 0;
-}
-
 // exec system commands
 int yap::launcher(std::vector<std::string> commands) {
   char **args = vec_to_array(commands);
