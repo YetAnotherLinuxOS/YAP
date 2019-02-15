@@ -27,12 +27,8 @@ int launcher(const char **command); /* only for legacy purposes */
 
 void run(std::vector<std::string>, std::string);
 
-// build
 void download(std::string, std::string);
 void extract(std::string, std::string, std::string);
-void compile(std::vector<std::string>, std::vector<std::string>);
-void uninstall(std::vector<std::string>, std::string);
-void apply_patches(std::vector<std::string>);
 } // namespace yap
 
 #endif
