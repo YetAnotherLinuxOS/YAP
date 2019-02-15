@@ -78,3 +78,33 @@ std::vector<std::string> split(std::string string, std::string delimiter) {
 
   return buffer;
 }
+
+void yap::download(std::string url, std::string name) {
+  std::vector<std::string> args = {"curl", url, "-o", name, "-L", "-s"};
+
+  if (yap::launcher(args) == -1) {
+    std::cerr << "Download failed!\nerrno: " << errno << "\n";
+    exit(-1);
+  }
+}
+
+// extract
+void yap::extract(std::string name, std::string compression_format,
+                  std::string directory) {
+  fs::create_directory(directory);
+  std::vector<std::string> args;
+  if (compression_format == ".tar.gz")
+    args = {"tar", "-x", "-f", name, "-C", directory, "--strip-components",
+            "1"};
+  else if (compression_format == ".zip")
+    args = {"unzip", name, "-d", directory};
+  else {
+    std::cerr << "Compression not supported\n";
+    exit(-1);
+  }
+
+  if (yap::launcher(args) == -1) {
+    std::cerr << "Extract falied!\nerrno: " << errno << std::endl;
+    exit(-1);
+  }
+}
