@@ -70,29 +70,27 @@ yap::Package::Package(std::string pkg) {
   // tables map
   dependencies = map_table("dependencies");
   features = map_table("features");
+
+  // name for functions
+  name_ver = name + version;
 }
 
-std::string yap::Package::GetNameVer() { return name + version; }
-
-void yap::Package::Download() {
-  yap::download(source_link, name + version + compression_format);
-}
-
-void yap::Package::Compile() { yap::compile(compile_make, patches); }
-
-void yap::Package::Extract() {
-  yap::extract(name + version + compression_format, compression_format,
-               name + version);
-}
+std::string yap::Package::GetNameVer() { return name_ver; }
 
 bool yap::Package::IsInstalled() { return installed; }
 
-void yap::Package::PreCompile() { /* TODO: Implement pre compile options based
-                                     on ybh */
+void yap::Package::PreCompile() {
+  /* TODO: Implement pre compile options based on ybh */
 }
 
-void yap::Package::Uninstall() {
-  yap::uninstall(compile_uninstall, name + version);
+// download
+void yap::Package::Download() {
+  yap::download(source_link, name_ver + compression_format);
+}
+
+// extract
+void yap::Package::Extract() {
+  yap::extract(name_ver + compression_format, compression_format, name_ver);
 }
 
 std::vector<std::string> search(std::string reg) {
@@ -118,4 +116,42 @@ std::vector<std::string> search(std::string reg) {
   }
 
   return matches;
+}
+
+void add_n(std::string name) {
+  std::ofstream file(name, std::ios::app);
+  file << "  \n\n";
+}
+
+// apply possible patches
+void apply_patches(std::vector<std::string> patches) {
+  int i = 0;
+  for (auto patch : patches) {
+    std::string name = "patch_" + std::to_string(i) + ".patch";
+    yap::download(patch, name);
+    add_n(name);
+    std::vector<std::string> buffer = {"patch", "-i", name};
+    if (yap::launcher(buffer) == -1) {
+      std::cerr << "Failed to apply patches\nerrno" << errno << "\n";
+      exit(-1);
+    }
+    ++i;
+  }
+}
+
+// compile process
+void yap::Package::Compile() {
+  if (patches.size() != 0)
+    apply_patches(patches);
+
+  // make & install
+  yap::run(compile_make, "Compile");
+}
+
+// install
+void yap::Package::Install() { /* working */
+}
+
+// uninstall
+void yap::Package::Uninstall() { /* working */
 }
