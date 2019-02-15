@@ -58,11 +58,6 @@ int main(int argc, char **argv) {
     chdir(pkg.GetNameVer().c_str());
     pkg.Compile();
 
-  } else if (options[1] == "-u" | options[1] == "--uninstall") {
-
-    yap::Package pkg(options[2]);
-    pkg.Uninstall();
-
   } else if (options[1] == "-s" | options[1] == "--search") {
 
     for (auto &pkg : search(options[2]))
