@@ -21,12 +21,8 @@ namespace yap {
 // utils
 std::vector<std::string> getfile(std::string);
 std::string get_ybh(std::string);
-
 int launcher(std::vector<std::string>);
-int launcher(const char **command); /* only for legacy purposes */
-
 void run(std::vector<std::string>, std::string);
-
 void download(std::string, std::string);
 void extract(std::string, std::string, std::string);
 } // namespace yap
