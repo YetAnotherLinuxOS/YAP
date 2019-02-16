@@ -53,9 +53,11 @@ int main(int argc, char **argv) {
   } else if (options[1] == "-i" | options[1] == "--install") {
 
     yap::Package pkg(options[2]);
+    pkg.IsInstalled();
+    pkg.Mkdir();
     pkg.Download();
     pkg.Extract();
-    chdir(pkg.GetNameVer().c_str());
+    pkg.Chdir();
     pkg.Compile();
 
   } else if (options[1] == "-s" | options[1] == "--search") {
