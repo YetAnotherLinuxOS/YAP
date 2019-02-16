@@ -75,24 +75,26 @@ yap::Package::Package(std::string pkg) {
   name_ver = name + version;
 }
 
-// std::string yap::Package::GetNameVer() { return name_ver; }
+//std::string yap::Package::GetNameVer() { return name_ver; }
 
 void yap::Package::Mkdir() {
   fs::create_directory(name);
   chdir(name.c_str());
 }
 
-void yap::Package::Chdir() { chdir(name_ver.c_str()); }
+void yap::Package::Chdir() {
+  chdir(name_ver.c_str());
+}
 
 void yap::Package::IsInstalled() {
   char aws;
   if (yap::is_installed(name_ver)) {
-    std::cout << "This package is already installed\nReinstall? [y], [n]: ";
-    std::cin >> aws;
-    if (aws == 'n')
-      exit(0);
-    else if (aws != 'y')
-      exit(-1);
+      std::cout << "This package is already installed\nReinstall? [y], [n]: ";
+      std::cin >> aws;
+      if (aws == 'n')
+        exit(0);
+      else if (aws != 'y')
+        exit(-1);
   }
 }
 
@@ -165,8 +167,18 @@ void yap::Package::Compile() {
   yap::run(compile_make, "Compile");
 }
 
+void write_pkgs(std::string name, std::string pkg) {
+  if (!yap::is_installed(pkg)) {
+    std::ofstream file ("/tmp/world", std::ios::app);
+    if (file.is_open())
+      file << name + "/" + pkg << std::endl;
+    file.close();
+  }
+}
+
 // install
 void yap::Package::Install() { /* working */
+  write_pkgs(name, name_ver);
 }
 
 // uninstall

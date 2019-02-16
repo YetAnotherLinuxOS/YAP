@@ -100,10 +100,16 @@ void yap::extract(std::string name, std::string compression_format,
 }
 
 bool yap::is_installed(std::string pkg) {
-  fs::path path = ".";
-  for (auto &sub_path : fs::directory_iterator(path)) {
-    if (fs::exists((std::string)sub_path.path() + "/" + pkg))
-      return true;
+  std::string data;
+  std::ifstream file ("/tmp/world");
+  if (file.is_open()) {
+    while (getline(file, data)) {
+      if(std::regex_search(data, (std::regex) pkg)) {
+        file.close();
+        return true;
+      }
+    }
   }
+  file.close();
   return false;
 }

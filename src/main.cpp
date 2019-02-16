@@ -59,6 +59,7 @@ int main(int argc, char **argv) {
     pkg.Extract();
     pkg.Chdir();
     pkg.Compile();
+    pkg.Install();
 
   } else if (options[1] == "-s" | options[1] == "--search") {
 
