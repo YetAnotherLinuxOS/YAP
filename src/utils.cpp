@@ -101,10 +101,10 @@ void yap::extract(std::string name, std::string compression_format,
 
 bool yap::is_installed(std::string pkg) {
   std::string data;
-  std::ifstream file ("/tmp/world");
+  std::ifstream file("/tmp/world");
   if (file.is_open()) {
     while (getline(file, data)) {
-      if(std::regex_search(data, (std::regex) pkg)) {
+      if (std::regex_search(data, (std::regex)pkg)) {
         file.close();
         return true;
       }

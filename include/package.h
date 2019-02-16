@@ -26,12 +26,12 @@ private:
   std::vector<std::string> compile_uninstall;
   std::vector<std::string> patches;
   std::string name_ver;
-  //bool installed = false;
+  // bool installed = false;
 
 public:
   std::string get_info();
   Package(std::string);
-  //std::string GetNameVer();
+  // std::string GetNameVer();
   void Download();
   void Extract();
   void IsInstalled();
