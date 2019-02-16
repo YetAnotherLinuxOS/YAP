@@ -98,3 +98,12 @@ void yap::extract(std::string name, std::string compression_format,
     exit(-1);
   }
 }
+
+bool yap::is_installed(std::string pkg) {
+  fs::path path = ".";
+  for (auto &sub_path : fs::directory_iterator(path)) {
+    if (fs::exists((std::string)sub_path.path() + "/" + pkg))
+      return true;
+  }
+  return false;
+}
