@@ -75,9 +75,26 @@ yap::Package::Package(std::string pkg) {
   name_ver = name + version;
 }
 
-std::string yap::Package::GetNameVer() { return name_ver; }
+// std::string yap::Package::GetNameVer() { return name_ver; }
 
-bool yap::Package::IsInstalled() { return installed; }
+void yap::Package::Mkdir() {
+  fs::create_directory(name);
+  chdir(name.c_str());
+}
+
+void yap::Package::Chdir() { chdir(name_ver.c_str()); }
+
+void yap::Package::IsInstalled() {
+  char aws;
+  if (yap::is_installed(name_ver)) {
+    std::cout << "This package is already installed\nReinstall? [y], [n]: ";
+    std::cin >> aws;
+    if (aws == 'n')
+      exit(0);
+    else if (aws != 'y')
+      exit(-1);
+  }
+}
 
 void yap::Package::PreCompile() {
   /* TODO: Implement pre compile options based on ybh */
